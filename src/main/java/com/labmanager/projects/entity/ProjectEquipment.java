@@ -13,12 +13,43 @@ public class ProjectEquipment {
     @ManyToOne(optional = false)
     @JoinColumn(name = "project_id")
     private Project project;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "equipment")
-    private String equipment;
-
-    @Column(name = "used_quantity", nullable = false)
+    private Long equipmentId;
     private Integer usedQuantity;
+
+    public ProjectEquipment() {}
+
+    public ProjectEquipment(Project project, Long equipmentId, Integer usedQuantity) {
+        this.project = project;
+        this.equipmentId = equipmentId;
+        this.usedQuantity = usedQuantity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Integer getUsedQuantity() {
+        return usedQuantity;
+    }
+
+    public void setUsedQuantity(Integer usedQuantity) {
+        this.usedQuantity = usedQuantity;
+    }
 }
 
