@@ -3,8 +3,6 @@ package com.labmanager.projects.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 @Entity
@@ -31,17 +29,15 @@ public class Project {
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
+    // team members
     @ElementCollection
     @CollectionTable(name = "project_participants", joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "user_id")
     private List<Long> participants = new ArrayList<>();  // userIds
 
-    // equipment used
-    @ElementCollection
-    @CollectionTable(name = "project_equipment",joinColumns = @JoinColumn(name = "project_id"))
-    @MapKeyJoinColumn(name = "equipment_id")
-    @Column(name = "used_quantity")
-    private Map<String, Integer> equipmentUsage = new HashMap<>();  // name, used quantity
+    // equipment
+    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<ProjectEquipment> equipment = new ArrayList<>();
 
 
     public Project() {}
@@ -122,6 +118,30 @@ public class Project {
 
     public void setParticipants(List<Long> participants) {
         this.participants = participants;
+    }
+
+    public List<ProjectEquipment> getEquipment() {
+        return equipment;
+    }
+
+    public void setEquipment(List<ProjectEquipment> equipment) {
+        this.equipment = equipment;
+        // ensure back-references
+        if (this.equipment != null) {
+            for (ProjectEquipment pe : this.equipment) {
+                pe.setProject(this);
+            }
+        }
+    }
+
+    public void addEquipment(ProjectEquipment pe) {
+        pe.setProject(this);
+        this.equipment.add(pe);
+    }
+
+    public void removeEquipment(ProjectEquipment pe) {
+        this.equipment.remove(pe);
+        pe.setProject(null);
     }
 
 }

@@ -13,14 +13,15 @@ public class ProjectEquipment {
     @ManyToOne(optional = false)
     @JoinColumn(name = "project_id")
     private Project project;
-    private Long equipmentId;
+    
+    private String name;
     private Integer usedQuantity;
 
     public ProjectEquipment() {}
 
-    public ProjectEquipment(Project project, Long equipmentId, Integer usedQuantity) {
+    public ProjectEquipment(Project project, String name, Integer usedQuantity) {
         this.project = project;
-        this.equipmentId = equipmentId;
+        this.name = name;
         this.usedQuantity = usedQuantity;
     }
 
@@ -36,12 +37,12 @@ public class ProjectEquipment {
         this.project = project;
     }
 
-    public Long getEquipmentId() {
-        return equipmentId;
+    public String getName(){
+        return name;
     }
 
-    public void setEquipmentId(Long equipmentId) {
-        this.equipmentId = equipmentId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getUsedQuantity() {

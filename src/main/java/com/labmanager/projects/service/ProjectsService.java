@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.labmanager.projects.entity.Project;
 import com.labmanager.projects.repository.ProjectsRepository;
@@ -42,11 +44,6 @@ public class ProjectsService {
         return repo.findAllByLabId(labId);
     }
 
-    // add a new project
-    public Project addProject(Project project) {
-        if (project == null) return null;
-        return repo.save(project);
-    }
     
     // set project status
     public Project setProjectStatus(Long projectId, Project.Status status) {
@@ -57,9 +54,33 @@ public class ProjectsService {
             }).orElse(null);
     }
 
-    
+    // Get project by id
+    public Project getProjectById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
 
-    
+    // Delete project
+    public boolean deleteProject(Long id) {
+        if (id == null) return false;
+        if (!repo.existsById(id)) return false;
+        repo.deleteById(id);
+        return true;
+    }
+
+    /* 
+    @Transactional
+    public Project createProject(CreateProjectRequest req) {
+
+        // 1. rezerviraj opremo (v labs-service: reservationService)
+
+        // 2. ustvari projekt
+        Project project = new Project(req.getName());
+
+        // 3. shrani eqipment
+
+        return projectRepository.save(project);
+    }   
+    */ 
 }
 
 
