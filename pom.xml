@@ -26,6 +26,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- web client (za labs) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
     </dependencies>
 
     <!-- Spring Boot plugin (podedovan, ni treba konfiguracije) -->
