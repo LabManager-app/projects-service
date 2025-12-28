@@ -1,6 +1,7 @@
 package com.labmanager.projects.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class Project {
 
     // equipment
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
     private List<ProjectEquipment> equipment = new ArrayList<>();
 
 

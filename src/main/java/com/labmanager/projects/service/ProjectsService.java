@@ -64,9 +64,30 @@ public class ProjectsService {
     }
 
     // Delete project
+    @Transactional
     public boolean deleteProject(Long id) {
         if (id == null) return false;
-        if (!repo.existsById(id)) return false;
+        Project project = repo.findById(id).orElse(null);
+        if (project == null) return false;
+
+        // If project reserved equipment in a lab, attempt to free it first
+        String labId = project.getLabId();
+        if (labId != null && project.getEquipment() != null && !project.getEquipment().isEmpty()) {
+            java.util.List<EquipmentRequest> toFree = project.getEquipment().stream()
+                    .map(pe -> new EquipmentRequest(pe.getName(), pe.getUsedQuantity() == null ? 0 : pe.getUsedQuantity()))
+                    .collect(Collectors.toList());
+            try {
+                Boolean freed = labServiceClient.free(labId, toFree);
+                if (freed == null || !freed) {
+                    // failed to free resources in lab -> abort deletion
+                    return false;
+                }
+            } catch (Exception ex) {
+                // error calling lab service -> abort deletion
+                return false;
+            }
+        }
+
         repo.deleteById(id);
         return true;
     }

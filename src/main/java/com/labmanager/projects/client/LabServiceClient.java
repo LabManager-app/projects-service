@@ -24,4 +24,15 @@ public class LabServiceClient {
                 .bodyToMono(Boolean.class)
                 .block();
     }
+
+    // free previously reserved equipment (POST /labs/{labId}/reservation/free)
+    public Boolean free(String labId, java.util.List<com.labmanager.projects.dto.EquipmentRequest> equipmentRequests) {
+        return webClient.post()
+                .uri(uriBuilder -> uriBuilder.path("/labs/{labId}/reservation/free").build(labId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(equipmentRequests)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
+    }
 }

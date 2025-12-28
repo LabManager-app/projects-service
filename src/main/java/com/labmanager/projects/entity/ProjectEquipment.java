@@ -1,6 +1,7 @@
 package com.labmanager.projects.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "project_equipment")
@@ -11,6 +12,7 @@ public class ProjectEquipment {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JsonBackReference
     @JoinColumn(name = "project_id")
     private Project project;
     
