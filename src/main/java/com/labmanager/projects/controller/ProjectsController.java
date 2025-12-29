@@ -41,17 +41,17 @@ public class ProjectsController {
 	}
 
 	@GetMapping("/user/{userId}")
-	public ResponseEntity<List<Project>> getByUser(@PathVariable Long userId) {
+	public ResponseEntity<List<Project>> getByUser(@PathVariable("userId") Long userId) {
 		return ResponseEntity.ok(projectsService.getProjectsByUserId(userId));
 	}
 
 	@GetMapping("/lab/{labId}")
-	public ResponseEntity<List<Project>> getByLab(@PathVariable String labId) {
+	public ResponseEntity<List<Project>> getByLab(@PathVariable("labId") String labId) {
 		return ResponseEntity.ok(projectsService.getProjectsByLabId(labId));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Project> getById(@PathVariable Long id) {
+	public ResponseEntity<Project> getById(@PathVariable("id") Long id) {
 		Project p = projectsService.getProjectById(id);
 		if (p == null) return ResponseEntity.notFound().build();
 		return ResponseEntity.ok(p);
@@ -72,14 +72,14 @@ public class ProjectsController {
 	}
 
 	@PutMapping("/{id}/status")
-	public ResponseEntity<Project> setStatus(@PathVariable Long id, @RequestParam Project.Status status) {
+	public ResponseEntity<Project> setStatus(@PathVariable("id") Long id, @RequestParam Project.Status status) {
 		Project updated = projectsService.setProjectStatus(id, status);
 		if (updated == null) return ResponseEntity.notFound().build();
 		return ResponseEntity.ok(updated);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
 		boolean removed = projectsService.deleteProject(id);
 		return removed ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
 	}
