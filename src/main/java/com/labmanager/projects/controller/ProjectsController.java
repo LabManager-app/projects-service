@@ -45,6 +45,16 @@ public class ProjectsController {
 		return ResponseEntity.ok(projectsService.getProjectsByUserId(userId));
 	}
 
+	@GetMapping("/user/{userId}/active")
+	public ResponseEntity<List<Project>> getByUserActive(@PathVariable("userId") Long userId) {
+		return ResponseEntity.ok(projectsService.getCurrentProjectsByUserId(userId));
+	}
+
+	@GetMapping("/user/{userId}/completed")
+	public ResponseEntity<List<Project>> getByUserCompleted(@PathVariable("userId") Long userId) {
+		return ResponseEntity.ok(projectsService.getCompletedProjectsByUserId(userId));
+	}
+
 	@GetMapping("/lab/{labId}")
 	public ResponseEntity<List<Project>> getByLab(@PathVariable("labId") String labId) {
 		return ResponseEntity.ok(projectsService.getProjectsByLabId(labId));

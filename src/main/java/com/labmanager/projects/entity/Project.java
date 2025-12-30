@@ -13,7 +13,7 @@ public class Project {
     public enum Status {
         ACTIVE,
         COMPLETED,
-        CANCELLED
+        CANCELED
     }
 
     @Id
@@ -44,7 +44,7 @@ public class Project {
 
     public Project() {}
 
-    public Project(String name, String labId, String location) {
+    public Project(String name, String labId) {
         this.name = name;
         this.labId = labId;
     }

@@ -3,6 +3,7 @@ package com.labmanager.projects.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,12 +49,32 @@ public class ProjectsService {
         return repo.findAllByLabId(labId);
     }
 
+    // get current projects for a specific user
+    public List<Project> getCurrentProjectsByUserId(Long userId) {
+        return getProjectsByUserId(userId).stream()
+            .filter(p -> p.getStatus() == Project.Status.ACTIVE)
+            .collect(Collectors.toList());
+    }
+
+    // get completed projects for a specific user
+    public List<Project> getCompletedProjectsByUserId(Long userId) {
+        return getProjectsByUserId(userId).stream()
+            .filter(p -> p.getStatus() == Project.Status.COMPLETED)
+            .collect(Collectors.toList());
+    }
+
     
     // set project status
     public Project setProjectStatus(Long projectId, Project.Status status) {
         return repo.findById(projectId)
             .map(p -> {
                 p.setStatus(status);
+                // set or clear endDate depending on new status
+                if (status == Project.Status.COMPLETED || status == Project.Status.CANCELED) {
+                    p.setEndDate(LocalDate.now());
+                } else {
+                    p.setEndDate(null);
+                }
                 return repo.save(p);
             }).orElse(null);
     }
