@@ -64,7 +64,7 @@ public class ProjectsService {
     }
 
     
-    // set project status
+    // end project
     public Project setProjectStatus(Long projectId, Project.Status status) {
         return repo.findById(projectId)
             .map(p -> {

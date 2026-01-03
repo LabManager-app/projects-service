@@ -15,17 +15,28 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.labmanager.projects.entity.Project;
 import com.labmanager.projects.service.ProjectsService;
+import com.labmanager.projects.service.EquipmentSuggestionService;
 import com.labmanager.projects.dto.CreateProjectRequest;
+import com.labmanager.projects.dto.EquipmentRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/projects")
 public class ProjectsController {
 
 	private final ProjectsService projectsService;
+	private final EquipmentSuggestionService suggestionService;
+    private static final Logger log = LoggerFactory.getLogger(ProjectsController.class);
+	private final com.fasterxml.jackson.databind.ObjectMapper om = new com.fasterxml.jackson.databind.ObjectMapper();
 
-	public ProjectsController(ProjectsService projectsService) {
+	public ProjectsController(ProjectsService projectsService, EquipmentSuggestionService suggestionService) {
 		this.projectsService = projectsService;
+		this.suggestionService = suggestionService;
 	}
 
     // return current projects
@@ -92,6 +103,21 @@ public class ProjectsController {
 	public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
 		boolean removed = projectsService.deleteProject(id);
 		return removed ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+	}
+
+	// with OpenAI generate equipment from description
+	@PostMapping("/generateEquipment")
+	public ResponseEntity<?> generateEquipment(@RequestBody com.labmanager.projects.dto.EquipmentGenerationRequest req) {
+    if (req == null || req.getDescription() == null) return ResponseEntity.badRequest().build();
+    try {
+        String jsonArray = suggestionService.suggestEquipment(req.getDescription(), req.getAvailableEquipment());
+        // vrnemo surovi JSON z Content-Type application/json
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(om.readValue(jsonArray, Object.class));
+    } catch (IllegalStateException ise) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(Map.of("error", ise.getMessage()));
+    } catch (Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", ex.getMessage()));
+    }
 	}
 
 }
