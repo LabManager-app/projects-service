@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: projects-service-config
+data:
+  # Database URL now uses the external host/port/database declared in the secret
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://lab-manager-dbs.postgres.database.azure.com:5432/projects-db"
+  SPRING_PROFILES_ACTIVE: "default"
+  # URL for Labs service used by Projects service to reserve equipment
+  LAB_SERVICE_URL: "http://labs-service:8080"

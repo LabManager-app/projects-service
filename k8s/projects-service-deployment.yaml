@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projects-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projects-service
+  template:
+    metadata:
+      labels:
+        app: projects-service
+    spec:
+      containers:
+        - name: projects-service
+          image: leakr109/projects-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: projects-service-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: projects-db-secret
+                  key: PGUSER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: projects-db-secret
+                  key: PGPASSWORD
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: projects-service-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: LAB_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: projects-service-config
+                  key: LAB_SERVICE_URL
