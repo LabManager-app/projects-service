@@ -17,13 +17,10 @@ import com.labmanager.projects.entity.Project;
 import com.labmanager.projects.service.ProjectsService;
 import com.labmanager.projects.service.EquipmentSuggestionService;
 import com.labmanager.projects.dto.CreateProjectRequest;
-import com.labmanager.projects.dto.EquipmentRequest;
 import org.springframework.http.HttpStatus;
+import java.net.URI;
 import org.springframework.http.MediaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/projects")
@@ -31,7 +28,6 @@ public class ProjectsController {
 
 	private final ProjectsService projectsService;
 	private final EquipmentSuggestionService suggestionService;
-    private static final Logger log = LoggerFactory.getLogger(ProjectsController.class);
 	private final com.fasterxml.jackson.databind.ObjectMapper om = new com.fasterxml.jackson.databind.ObjectMapper();
 
 	public ProjectsController(ProjectsService projectsService, EquipmentSuggestionService suggestionService) {
@@ -89,7 +85,8 @@ public class ProjectsController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(created);
+		URI location = URI.create(String.format("/projects/%d", created.getId()));
+		return ResponseEntity.created(location).body(created);
 	}
 
 	@PutMapping("/{id}/status")
