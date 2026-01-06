@@ -26,18 +26,19 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- web client (za labs) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
+        <!-- OpenAPI / Swagger UI -->
+            <!-- web client (za labs) - needed for WebClient used by LabServiceClient -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-webflux</artifactId>
+            </dependency>
 
-        <!-- OpenAPI / Swagger UI for WebFlux -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-            <version>2.1.0</version>
-        </dependency>
+            <!-- Use servlet (WebMVC) springdoc starter so Swagger UI is served correctly -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>2.5.0</version>
+            </dependency>
 
     </dependencies>
 
