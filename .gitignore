@@ -1,0 +1,6 @@
+.env
+target/
+run-dev.bat
+k8s/*-secrets.yaml
+k8s/*-secret.yaml
+./k8s/post-blob-secret.yaml
