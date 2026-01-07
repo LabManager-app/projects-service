@@ -3,6 +3,7 @@ com\labmanager\projects\service\ProjectsService.class
 com\labmanager\projects\dto\EquipmentRequest.class
 com\labmanager\projects\ProjectsServiceApplication.class
 com\labmanager\projects\entity\Project$Status.class
+com\labmanager\projects\controller\HealthController.class
 com\labmanager\projects\dto\CreateProjectRequest.class
 com\labmanager\projects\dto\EquipmentGenerationRequest.class
 com\labmanager\projects\repository\ProjectsRepository.class

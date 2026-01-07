@@ -1,6 +1,7 @@
 C:\Users\leakr\3.letnik\prpo\labManager\projects-service\src\main\java\com\labmanager\projects\client\LabServiceClient.java
 C:\Users\leakr\3.letnik\prpo\labManager\projects-service\src\main\java\com\labmanager\projects\config\CorsConfig.java
 C:\Users\leakr\3.letnik\prpo\labManager\projects-service\src\main\java\com\labmanager\projects\config\OpenApiConfig.java
+C:\Users\leakr\3.letnik\prpo\labManager\projects-service\src\main\java\com\labmanager\projects\controller\HealthController.java
 C:\Users\leakr\3.letnik\prpo\labManager\projects-service\src\main\java\com\labmanager\projects\controller\ProjectsController.java
 C:\Users\leakr\3.letnik\prpo\labManager\projects-service\src\main\java\com\labmanager\projects\dto\CreateProjectRequest.java
 C:\Users\leakr\3.letnik\prpo\labManager\projects-service\src\main\java\com\labmanager\projects\dto\EquipmentGenerationRequest.java
