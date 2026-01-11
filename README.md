@@ -1,4 +1,4 @@
-# Users Service
+# Projects Service
 
 ## Opis mikrostoritve
 **Projects Service** je ena izmed mikrostoritev v spletni aplikaciji **Lab Manager**.
