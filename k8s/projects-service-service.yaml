@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: projects-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: projects-service
   ports:
     - port: 8080
       targetPort: 8080
       protocol: TCP
+      NodePort: 30003
