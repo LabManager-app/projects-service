@@ -12,7 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
             .allowedOrigins(
                 "http://localhost:3000", // local frontend
-                "https://labmanagerfrontend.vercel.app/"
+                "https://labmanagerfrontend.vercel.app"
             )
             .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             .allowedHeaders("*");
