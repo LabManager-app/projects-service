@@ -10,7 +10,7 @@ public class LabServiceClient {
 
     private final WebClient webClient;
 
-    public LabServiceClient(WebClient.Builder builder, @Value("${lab.service.url}") String baseUrl) {
+    public LabServiceClient(WebClient.Builder builder, @Value("${LAB_SERVICE_URL}") String baseUrl) {
         this.webClient = builder.baseUrl(baseUrl).build();
     }
 

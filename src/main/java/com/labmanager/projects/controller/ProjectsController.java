@@ -18,7 +18,6 @@ import com.labmanager.projects.service.ProjectsService;
 import com.labmanager.projects.service.EquipmentSuggestionService;
 import com.labmanager.projects.dto.CreateProjectRequest;
 import org.springframework.http.HttpStatus;
-import java.net.URI;
 import org.springframework.http.MediaType;
 import java.util.Map;
 
@@ -129,8 +128,8 @@ public class ProjectsController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 
-		URI location = URI.create(String.format("/projects/%d", created.getId()));
-		return ResponseEntity.created(location).body(created);
+		//URI location = URI.create(String.format("/projects/%d", created.getId()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 
 	@Operation(summary = "Posodobi status projekta", description = "Nastavi status projekta (npr. ACTIVE/COMPLETED).")
