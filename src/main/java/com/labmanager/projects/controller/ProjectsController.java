@@ -135,13 +135,21 @@ public class ProjectsController {
 	@Operation(summary = "Posodobi status projekta", description = "Nastavi status projekta (npr. ACTIVE/COMPLETED).")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "Status posodobljen"),
+		@ApiResponse(responseCode = "400", description = "Neveljaven zahtevek"),
+		@ApiResponse(responseCode = "409", description = "Status ni bil posodobljen zaradi konflikta (npr. sprostitev opreme ni uspela)"),
 		@ApiResponse(responseCode = "404", description = "Projekt ni najden")
 	})
 	@PutMapping("/{id}/status")
 	public ResponseEntity<Project> setStatus(@Parameter(description = "ID projekta") @PathVariable("id") Long id, @RequestParam Project.Status status) {
-		Project updated = projectsService.setProjectStatus(id, status);
-		if (updated == null) return ResponseEntity.notFound().build();
-		return ResponseEntity.ok(updated);
+		try {
+			Project updated = projectsService.setProjectStatus(id, status);
+			if (updated == null) return ResponseEntity.notFound().build();
+			return ResponseEntity.ok(updated);
+		} catch (IllegalArgumentException iae) {
+			return ResponseEntity.badRequest().build();
+		} catch (IllegalStateException ise) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
 	}
 
 	@Operation(summary = "Izbriši projekt", description = "Izbriše projekt z danim ID.")

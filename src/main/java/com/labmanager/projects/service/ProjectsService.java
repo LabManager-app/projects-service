@@ -25,6 +25,19 @@ public class ProjectsService {
         this.labServiceClient = labServiceClient;
     }
 
+    private static boolean isEndingStatus(Project.Status status) {
+        return status == Project.Status.COMPLETED || status == Project.Status.CANCELED;
+    }
+
+    private static List<EquipmentRequest> toEquipmentRequests(List<ProjectEquipment> equipment) {
+        if (equipment == null || equipment.isEmpty()) return List.of();
+        return equipment.stream()
+                .filter(pe -> pe != null && pe.getName() != null && !pe.getName().isBlank())
+                .map(pe -> new EquipmentRequest(pe.getName(), pe.getUsedQuantity() == null ? 0 : pe.getUsedQuantity()))
+                .filter(er -> er.getStock() > 0)
+                .collect(Collectors.toList());
+    }
+
     // get current projects (ACTIVE)
     public List<Project> getCurrentProjects() {
         return repo.findAllByStatus(Project.Status.ACTIVE);
@@ -65,12 +78,36 @@ public class ProjectsService {
 
     
     // end project
-    public Project setProjectStatus(Long projectId, Project.Status status) {
+    @Transactional
+    public Project setProjectStatus(Long projectId, Project.Status newStatus) {
+        if (projectId == null || newStatus == null) {
+            throw new IllegalArgumentException("projectId and status are required");
+        }
+
         return repo.findById(projectId)
             .map(p -> {
-                p.setStatus(status);
+                Project.Status oldStatus = p.getStatus();
+
+                // If we are transitioning into an ending status, free reserved equipment first.
+                if (isEndingStatus(newStatus) && !isEndingStatus(oldStatus)) {
+                    String labId = p.getLabId();
+                    List<EquipmentRequest> toFree = toEquipmentRequests(p.getEquipment());
+
+                    if (labId != null && !toFree.isEmpty()) {
+                        try {
+                            Boolean freed = labServiceClient.free(labId, toFree);
+                            if (freed == null || !freed) {
+                                throw new IllegalStateException("Failed to free reserved lab equipment");
+                            }
+                        } catch (Exception ex) {
+                            throw new IllegalStateException("Failed to free reserved lab equipment", ex);
+                        }
+                    }
+                }
+
+                p.setStatus(newStatus);
                 // set or clear endDate depending on new status
-                if (status == Project.Status.COMPLETED || status == Project.Status.CANCELED) {
+                if (isEndingStatus(newStatus)) {
                     p.setEndDate(LocalDate.now());
                 } else {
                     p.setEndDate(null);
@@ -94,14 +131,14 @@ public class ProjectsService {
         // If project reserved equipment in a lab, attempt to free it first
         String labId = project.getLabId();
         if (labId != null && project.getEquipment() != null && !project.getEquipment().isEmpty()) {
-            java.util.List<EquipmentRequest> toFree = project.getEquipment().stream()
-                    .map(pe -> new EquipmentRequest(pe.getName(), pe.getUsedQuantity() == null ? 0 : pe.getUsedQuantity()))
-                    .collect(Collectors.toList());
+            java.util.List<EquipmentRequest> toFree = toEquipmentRequests(project.getEquipment());
             try {
-                Boolean freed = labServiceClient.free(labId, toFree);
-                if (freed == null || !freed) {
-                    // failed to free resources in lab -> abort deletion
-                    return false;
+                if (!toFree.isEmpty()) {
+                    Boolean freed = labServiceClient.free(labId, toFree);
+                    if (freed == null || !freed) {
+                        // failed to free resources in lab -> abort deletion
+                        return false;
+                    }
                 }
             } catch (Exception ex) {
                 // error calling lab service -> abort deletion
